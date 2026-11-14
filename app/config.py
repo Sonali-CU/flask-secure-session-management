@@ -18,13 +18,13 @@ class Config:
     # 10 minutes absolute lifetime from session creation
     SESSION_ABSOLUTE_TIMEOUT = int(os.environ.get('SESSION_ABSOLUTE_TIMEOUT', 600))
     
-    # Demo and evaluation user accounts with argon2 / scrypt / pbkdf2 werkzeug hashes
+    # Demo and evaluation user accounts with argon2 / pbkdf2 werkzeug hashes
     USERS = {
-        'alice': {
-            'username': 'alice',
-            'password_hash': generate_password_hash('AliceUser@2026!'),
+        'sonali': {
+            'username': 'sonali',
+            'password_hash': generate_password_hash('SonaliSecure@2026!'),
             'role': 'user',
-            'full_name': 'Alice Johnson'
+            'full_name': 'Sonali Gupta'
         },
         'bob': {
             'username': 'bob',
@@ -34,7 +34,7 @@ class Config:
         },
         'admin': {
             'username': 'admin',
-            'password_hash': generate_password_hash('SuperAdminKey'),
+            'password_hash': generate_password_hash('SuperAdminKey$999'),
             'role': 'admin',
             'full_name': 'System Administrator'
         }

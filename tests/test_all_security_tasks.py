@@ -12,7 +12,7 @@ def test_task01_secure_session_creation(client):
     assert res_get.status_code == 200
     
     # POST valid login credentials for alice
-    res_post = client.post('/login', data={'username': 'alice', 'password': 'AliceUser@2026!'}, follow_redirects=False)
+    res_post = client.post('/login', data={'username': 'sonali', 'password': 'SonaliSecure@2026!'}, follow_redirects=False)
     assert res_post.status_code == 302
     assert res_post.headers['Location'].endswith('/dashboard')
     
@@ -23,7 +23,7 @@ def test_task01_secure_session_creation(client):
     # Access dashboard with session
     res_dash = client.get('/dashboard')
     assert res_dash.status_code == 200
-    assert b'Alice Johnson' in res_dash.data
+    assert b'Sonali Gupta' in res_dash.data
     assert b'Role: USER' in res_dash.data
 
 # --- Task 2: Unpredictable Session Identifiers ---
@@ -59,7 +59,7 @@ def test_task03_session_id_regeneration(client, app):
     assert pre_cookie is not None
     
     # Login as alice
-    res_login = client.post('/login', data={'username': 'alice', 'password': 'AliceUser@2026!'}, follow_redirects=False)
+    res_login = client.post('/login', data={'username': 'sonali', 'password': 'SonaliSecure@2026!'}, follow_redirects=False)
     post_cookie = None
     for c in res_login.headers.getlist('Set-Cookie'):
         if 'secure_session_token=' in c:
@@ -80,7 +80,7 @@ def test_task03_session_id_regeneration(client, app):
 def test_task04_session_expiration_timeout():
     # Test inactivity timeout (configured to 1s for fast automated test)
     quick_store = SessionStore(inactivity_timeout=1, absolute_timeout=10)
-    sid = quick_store.create_session({'username': 'alice', 'role': 'user'})
+    sid = quick_store.create_session({'username': 'sonali', 'role': 'user'})
     
     # Immediate check -> ACTIVE
     session, status = quick_store.get_session(sid)
@@ -95,7 +95,7 @@ def test_task04_session_expiration_timeout():
     
     # Test absolute timeout (configured to 2s, but continuous activity)
     abs_store = SessionStore(inactivity_timeout=5, absolute_timeout=2)
-    sid_abs = abs_store.create_session({'username': 'alice', 'role': 'user'})
+    sid_abs = abs_store.create_session({'username': 'sonali', 'role': 'user'})
     
     # Repeated access within inactivity limit
     time.sleep(0.8)
@@ -110,7 +110,7 @@ def test_task04_session_expiration_timeout():
 # --- Task 5: Session Invalidation After Logout ---
 def test_task05_session_invalidation_after_logout(client, app):
     # Login
-    res_login = client.post('/login', data={'username': 'alice', 'password': 'AliceUser@2026!'}, follow_redirects=False)
+    res_login = client.post('/login', data={'username': 'sonali', 'password': 'SonaliSecure@2026!'}, follow_redirects=False)
     session_cookie = None
     for c in res_login.headers.getlist('Set-Cookie'):
         if 'secure_session_token=' in c:
@@ -142,7 +142,7 @@ def test_task05_session_invalidation_after_logout(client, app):
 
 # --- Task 6: Secure Cookie Configuration ---
 def test_task06_secure_cookie_configuration(client):
-    res = client.post('/login', data={'username': 'alice', 'password': 'AliceUser@2026!'}, follow_redirects=False)
+    res = client.post('/login', data={'username': 'sonali', 'password': 'SonaliSecure@2026!'}, follow_redirects=False)
     cookie_headers = res.headers.getlist('Set-Cookie')
     
     secure_found = False
@@ -156,7 +156,7 @@ def test_task06_secure_cookie_configuration(client):
 
 # --- Task 7: HttpOnly Cookie Configuration ---
 def test_task07_httponly_cookie_configuration(client):
-    res = client.post('/login', data={'username': 'alice', 'password': 'AliceUser@2026!'}, follow_redirects=False)
+    res = client.post('/login', data={'username': 'sonali', 'password': 'SonaliSecure@2026!'}, follow_redirects=False)
     cookie_headers = res.headers.getlist('Set-Cookie')
     
     httponly_found = False
@@ -170,7 +170,7 @@ def test_task07_httponly_cookie_configuration(client):
 
 # --- Task 8: SameSite Cookie Policy ---
 def test_task08_samesite_cookie_policy(client):
-    res = client.post('/login', data={'username': 'alice', 'password': 'AliceUser@2026!'}, follow_redirects=False)
+    res = client.post('/login', data={'username': 'sonali', 'password': 'SonaliSecure@2026!'}, follow_redirects=False)
     cookie_headers = res.headers.getlist('Set-Cookie')
     
     samesite_val = None
@@ -194,7 +194,7 @@ def test_task09_session_fixation_prevention(client, app):
     client.set_cookie('secure_session_token', attacker_fixed_sid)
     
     # Victim logs in using the session
-    res_login = client.post('/login', data={'username': 'alice', 'password': 'AliceUser@2026!'}, follow_redirects=False)
+    res_login = client.post('/login', data={'username': 'sonali', 'password': 'SonaliSecure@2026!'}, follow_redirects=False)
     
     victim_sid = None
     for c in res_login.headers.getlist('Set-Cookie'):
@@ -214,7 +214,7 @@ def test_task09_session_fixation_prevention(client, app):
 # --- Task 10: Prevent Session IDs in URLs ---
 def test_task10_prevent_session_ids_in_urls(client):
     # Login
-    res = client.post('/login', data={'username': 'alice', 'password': 'AliceUser@2026!'}, follow_redirects=True)
+    res = client.post('/login', data={'username': 'sonali', 'password': 'SonaliSecure@2026!'}, follow_redirects=True)
     
     # Check current redirected URL: must NOT contain session ID parameters
     assert 'session_id' not in res.request.url
@@ -231,7 +231,7 @@ def test_task13_session_hijacking_simulation(client, app):
     # Valid user logs in with legitimate User-Agent
     res_login = client.post(
         '/login',
-        data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
         headers={'User-Agent': 'LegitimateBrowser/1.0 (Windows NT 10.0)'},
         follow_redirects=False
     )
@@ -255,7 +255,7 @@ def test_task13_session_hijacking_simulation(client, app):
 # --- Task 14: Role-Based Session Management & Privilege Regeneration ---
 def test_task14_role_based_session_management(client, app):
     # 1. Normal user alice logs in
-    client.post('/login', data={'username': 'alice', 'password': 'AliceUser@2026!'}, follow_redirects=True)
+    client.post('/login', data={'username': 'sonali', 'password': 'SonaliSecure@2026!'}, follow_redirects=True)
     
     # Alice can access /dashboard
     res_dash = client.get('/dashboard')

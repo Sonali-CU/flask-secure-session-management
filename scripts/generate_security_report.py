@@ -105,11 +105,11 @@ def run_automated_audit():
         # TC-01: Secure Session Creation (Task 1)
         # -------------------------------------------------------------
         s = requests.Session()
-        res_login = s.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        res_login = s.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                            verify=False, allow_redirects=False)
         cookie = res_login.cookies.get('secure_session_token')
         res_dash = s.get(f"{base_https}/dashboard", verify=False)
-        if res_login.status_code == 302 and cookie and res_dash.status_code == 200 and 'Alice Johnson' in res_dash.text:
+        if res_login.status_code == 302 and cookie and res_dash.status_code == 200 and 'Sonali Gupta' in res_dash.text:
             record_result("TC-01", "Secure Session Creation & Dashboard Authentication",
                           "HTTP 302 redirect, session cookie set, HTTP 200 on dashboard",
                           f"Status: {res_login.status_code}, Cookie: {cookie[:10]}..., Dash Status: {res_dash.status_code}", "PASS")
@@ -139,7 +139,7 @@ def run_automated_audit():
         s_regen = requests.Session()
         res_pre = s_regen.get(f"{base_https}/login", verify=False)
         pre_sid = res_pre.cookies.get('secure_session_token')
-        res_auth = s_regen.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        res_auth = s_regen.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                                 verify=False, allow_redirects=False)
         post_sid = res_auth.cookies.get('secure_session_token')
         
@@ -160,7 +160,7 @@ def run_automated_audit():
         # TC-04A: Session Inactivity Timeout (Task 4)
         # -------------------------------------------------------------
         s_inact = requests.Session()
-        s_inact.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        s_inact.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                      verify=False, allow_redirects=False)
         # Verify active initially
         res_init = s_inact.get(f"{base_https}/dashboard", verify=False, allow_redirects=False)
@@ -200,7 +200,7 @@ def run_automated_audit():
         # TC-05: Session Invalidation After Logout (Task 5)
         # -------------------------------------------------------------
         s_logout = requests.Session()
-        s_logout.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        s_logout.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                       verify=False, allow_redirects=False)
         logged_sid = s_logout.cookies.get('secure_session_token')
         res_logout = s_logout.get(f"{base_https}/logout", verify=False, allow_redirects=False)
@@ -223,7 +223,7 @@ def run_automated_audit():
         # -------------------------------------------------------------
         # TC-06: Secure Cookie Attribute Configuration (Task 6)
         # -------------------------------------------------------------
-        res_sec = requests.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        res_sec = requests.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                                 verify=False, allow_redirects=False)
         raw_cookie_header = res_sec.headers.get('Set-Cookie', '')
         has_secure = 'secure' in [p.strip().lower() for p in raw_cookie_header.split(';')]
@@ -269,7 +269,7 @@ def run_automated_audit():
         victim_session = requests.Session()
         victim_session.cookies.set('secure_session_token', attacker_sid)
         # Victim authenticates
-        res_vic_login = victim_session.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        res_vic_login = victim_session.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                                             verify=False, allow_redirects=False)
         vic_new_sid = res_vic_login.cookies.get('secure_session_token')
         
@@ -290,7 +290,7 @@ def run_automated_audit():
         # TC-10: Prevent Session IDs in URLs (Task 10)
         # -------------------------------------------------------------
         s_url = requests.Session()
-        res_url_login = s_url.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        res_url_login = s_url.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                                    verify=False, allow_redirects=True)
         final_url = res_url_login.url
         has_url_token = any(param in final_url for param in ['session_id', 'token', 'sid'])
@@ -307,7 +307,7 @@ def run_automated_audit():
         # -------------------------------------------------------------
         s_flow = requests.Session()
         # 1. Login
-        f_login = s_flow.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        f_login = s_flow.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                               verify=False, allow_redirects=True)
         # 2. Access protected area
         f_dash = s_flow.get(f"{base_https}/dashboard", verify=False)
@@ -339,7 +339,7 @@ def run_automated_audit():
         # Legitimate client
         legit_session = requests.Session()
         legit_session.headers.update({'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
-        legit_session.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        legit_session.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                            verify=False, allow_redirects=False)
         valid_sid = legit_session.cookies.get('secure_session_token')
         
@@ -365,7 +365,7 @@ def run_automated_audit():
         # -------------------------------------------------------------
         # Normal user alice accesses admin -> 403 Forbidden
         s_rbac = requests.Session()
-        s_rbac.post(f"{base_https}/login", data={'username': 'alice', 'password': 'AliceUser@2026!'},
+        s_rbac.post(f"{base_https}/login", data={'username': 'sonali', 'password': 'SonaliSecure@2026!'},
                     verify=False, allow_redirects=True)
         res_rbac_denied = s_rbac.get(f"{base_https}/admin", verify=False)
         old_rbac_sid = s_rbac.cookies.get('secure_session_token')

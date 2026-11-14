@@ -74,11 +74,11 @@ def capture_all():
         driver.save_screenshot(os.path.join(screenshots_dir, '01_login_page.png'))
 
         # 2. Perform Login as Alice
-        print("Logging in as alice...")
+        print("Logging in as sonali...")
         user_input = driver.find_element(By.ID, 'username')
         pass_input = driver.find_element(By.ID, 'password')
-        user_input.send_keys('alice')
-        pass_input.send_keys('AliceUser@2026!')
+        user_input.send_keys('sonali')
+        pass_input.send_keys('SonaliSecure@2026!')
         driver.find_element(By.CSS_SELECTOR, 'button[type="submit"]').click()
         time.sleep(1.5)
 
