@@ -1,39 +1,53 @@
 # Flask Secure Session Management & Automated Security Audit Suite
 
-An enterprise-grade, OWASP ASVS compliant implementation and testing laboratory for **Secure Session Management** in Python Flask. This repository demonstrates defense-in-depth session lifecycle controls, cryptographic unpredictability, anti-fixation countermeasures, hardened cookie configurations, and automated session security testing with audit reporting.
+[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12%20%7C%203.13-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-3.1.0-green.svg)](https://flask.palletsprojects.com/)
+[![Security Standards](https://img.shields.io/badge/Standard-OWASP%20ASVS%20v4.0%20%7C%20NIST%20SP%20800--63B-red.svg)](https://owasp.org/www-project-application-security-verification-standard/)
+[![Tests](https://img.shields.io/badge/Audit%20Tests-16%2F16%20Passed%20(100%25)-brightgreen.svg)]()
+
+An enterprise-grade, defense-in-depth implementation and verification laboratory for **Secure Session Management** built with Python Flask. Developed as part of the **Secure Coding Practices** curriculum at **Chanakya University**, this project demonstrates complete session lifecycle controls, cryptographic unpredictability, anti-fixation countermeasures, hardened HTTP cookie security policies, and an automated session security testing engine with CSV audit reporting.
+
+* **Author:** Sonali Gupta
+* **Student UID / Roll No:** `CU23BCA0060A`
+* **Program:** Bachelor of Computer Applications (BCA)
+* **Institution:** Chanakya University
+* **Course:** Secure Coding Practices (Classroom Assignment 2)
+* **Repository:** [https://github.com/Sonali-CU/flask-secure-session-management](https://github.com/Sonali-CU/flask-secure-session-management)
+* **Official Report Document:** [`assignment2.pdf`](assignment2.pdf)
 
 ---
 
-## 🌟 Key Features & Implementation Scope
+## 🌟 Security Architecture & Implementation Highlights
 
-1. **Secure Session Creation & Dashboard Access** (Task 1 & 11)
-   - User authentication backed by Werkzeug password hashing.
-   - Server-side cryptographic session store binding identity, creation timestamp, and last activity.
-2. **Unpredictable Session Identifiers** (Task 2)
-   - 256-bit CSPRNG token generation using Python's `secrets.token_urlsafe(32)` (5.998 bits/char Shannon entropy, 0 collisions across 1,000 samples).
-3. **Session ID Regeneration & Fixation Protection** (Task 3 & 9)
-   - Immediate regeneration of session identifiers upon login.
-   - Pre-login session tokens are purged from memory, defeating session fixation attacks.
-4. **Dual-Tier Session Expiration & Timeouts** (Task 4)
-   - **Inactivity Timeout**: Automatically expires after 2 minutes (120s) of user idle time.
-   - **Absolute Timeout**: Enforces a strict 10-minute (600s) maximum session lifetime regardless of continuous activity.
-5. **Complete Session Invalidation on Logout** (Task 5)
+1. **Secure Session Creation & Dashboard Telemetry**
+   - User authentication backed by salted Werkzeug password hashes.
+   - Server-side cryptographic session store tracking user identity, role, creation timestamp, and last activity.
+2. **Unpredictable Session Identifiers (CSPRNG Entropy)**
+   - 256-bit cryptographically secure pseudorandom token generation using Python's `secrets.token_urlsafe(32)`.
+   - Verified across 1,000 generated tokens: **0 collisions** with **5.998 bits/character** Shannon entropy.
+3. **Session ID Regeneration (Anti-Fixation Mechanism)**
+   - Immediate regeneration of session identifiers upon successful authentication.
+   - Pre-login session tokens are permanently wiped from server memory, defeating session fixation attacks.
+4. **Dual-Tier Session Expiration & Timeouts**
+   - **Inactivity Timeout (2 minutes / 120s):** Enforces automatic session termination on idle user connections.
+   - **Absolute Timeout (10 minutes / 600s):** Enforces a strict maximum session lifetime regardless of continuous activity.
+5. **Complete Session Invalidation on Logout**
    - Synchronous server-side memory purge and client-side cookie deletion (`Max-Age=0`).
-   - Prior session tokens immediately return `401 / 302` on subsequent access attempts.
-6. **Hardened Cookie Security Attributes** (Task 6, 7, 8)
-   - **`Secure`**: Cookie restricted exclusively to encrypted HTTPS/TLS connections.
+   - Prior session tokens immediately return `302 / 401` on subsequent requests.
+6. **Hardened Cookie Security Attributes (RFC 6265bis)**
+   - **`Secure`**: Cookie transmission restricted exclusively to encrypted HTTPS/TLS channels.
    - **`HttpOnly`**: JavaScript access via `document.cookie` is strictly blocked, neutralizing XSS session exfiltration.
-   - **`SameSite=Strict`**: Completely isolates the session cookie from cross-site requests, mitigating CSRF.
-7. **Zero Session Identifiers in URLs** (Task 10)
-   - Strict cookie-only session handling. URLs, query parameters, and Referer headers never leak tokens.
-8. **Session Hijacking Mitigation & Client Fingerprinting** (Task 13)
-   - User-Agent and client telemetry validation detecting anomalous token reuse.
-9. **Role-Based Session Management & Privilege Elevation Regeneration** (Task 14)
-   - RBAC restricting `/admin` to authorized administrators (HTTP `403 Forbidden` for normal users).
+   - **`SameSite=Strict`**: Isolates the cookie from cross-site requests, mitigating Cross-Site Request Forgery (CSRF).
+7. **Zero Session Identifiers in URLs**
+   - Strict cookie-only transport. URLs, query strings, and Referer headers never expose session tokens.
+8. **Session Hijacking Mitigation & Client Fingerprinting**
+   - Validates client telemetry (User-Agent / IP context) detecting anomalous token reuse; forged tokens are rejected.
+9. **Role-Based Session Management & Privilege Elevation Regeneration**
+   - Strict RBAC returning HTTP `403 Forbidden` for unauthorized role access to `/admin`.
    - Mandatory session ID regeneration whenever user clearance or privileges change.
-10. **Automated Security Testing & CSV Audit Report** (Task 12 & 15)
+10. **Automated Security Audit & CSV Report Generator**
     - Full automated test suite powered by `pytest` and `requests`.
-    - Automated compliance generator exporting `reports/session_security_report.csv` across all 15 security requirements.
+    - Programmatic compliance generator exporting `reports/session_security_report.csv` across 16 security test vectors.
 
 ---
 
@@ -65,12 +79,15 @@ flask-secure-session-management/
 │   └── test_all_security_tasks.py   # Unit & integration tests for all 15 tasks (12/12 passing)
 ├── scripts/
 │   ├── generate_security_report.py  # Automated security test runner exporting CSV audit report
-│   └── capture_screenshots.py       # Automated Edge headless browser screenshot generator
+│   ├── capture_screenshots.py       # Automated Edge headless browser screenshot generator
+│   └── build_assignment_pdf.py      # Automated PDF report compiler using Edge CDP
 ├── reports/
 │   ├── session_security_report.csv  # Required CSV audit report (16/16 PASSED)
 │   ├── audit_report.html            # Visual audit dashboard
+│   ├── assignment2_report.html      # HTML source for submission report
 │   └── SESSION_SECURITY_REPORT.md   # Comprehensive technical report
 ├── screenshots/                     # UI verification screenshots
+├── assignment2.pdf                  # Official submission report document
 ├── requirements.txt                 # Dependencies
 ├── run.py                           # Application runner (HTTP & HTTPS)
 └── README.md                        # Project documentation
@@ -80,26 +97,22 @@ flask-secure-session-management/
 
 ## 🚀 Quickstart & Setup Guide
 
-### 1. Prerequisites
-- Windows 10/11 or Linux/macOS
-- Python 3.11+ (verified on Python 3.13)
-
-### 2. Installation
+### 1. Installation
 ```bash
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/flask-secure-session-management.git
+git clone https://github.com/Sonali-CU/flask-secure-session-management.git
 cd flask-secure-session-management
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-### 3. Generate TLS Certificates (for HTTPS testing)
+### 2. Generate TLS Certificates (for HTTPS testing)
 ```bash
 python certs/generate_certs.py
 ```
 
-### 4. Run the Web Application
+### 3. Run the Web Application
 
 **HTTP Mode (Evaluation):**
 ```bash
@@ -119,25 +132,25 @@ Open [https://127.0.0.1:5000](https://127.0.0.1:5000)
 
 | Username | Password | Role | Description |
 | :--- | :--- | :--- | :--- |
-| `alice` | `AliceUser@2026!` | `user` | Normal User (can test privilege elevation) |
+| `sonali` | `SonaliSecure@2026!` | `user` | Primary User (Sonali Gupta &ndash; can test privilege elevation) |
 | `bob` | `BobUserPass#456` | `user` | Normal User |
 | `admin` | `SuperAdminKey$999` | `admin` | System Administrator (access to `/admin`) |
 
 ---
 
-## 🧪 Running Security Tests
+## 🧪 Automated Testing & Security Audit
 
 ### Run Unit Tests via Pytest
 ```bash
 python -m pytest -v tests/
 ```
-*Expected Result:* `12 passed in ~5s`
+*Result:* `12 passed in 4.86s (100% PASS)`
 
 ### Run Automated Security Audit & Generate CSV Report
 ```bash
 python scripts/generate_security_report.py
 ```
-*Expected Result:* `16/16 PASSED (100% Compliance)`, saving `reports/session_security_report.csv`.
+*Result:* `16/16 PASSED (100% Compliance)`, saving `reports/session_security_report.csv`.
 
 ---
 
@@ -166,7 +179,7 @@ python scripts/generate_security_report.py
 
 ## 📷 Screenshots
 
-### 1. User Dashboard & Session Telemetry
+### 1. User Dashboard & Session Telemetry (Sonali Gupta &ndash; @sonali)
 ![User Dashboard](screenshots/02_user_dashboard.png)
 
 ### 2. HttpOnly Cookie JavaScript Inspection
@@ -175,7 +188,7 @@ python scripts/generate_security_report.py
 ### 3. Role-Based Access Control (403 Forbidden for Normal User)
 ![403 Forbidden](screenshots/05_access_denied_403.png)
 
-### 4. Admin Panel (Post-Privilege Elevation with Regenerated Session)
+### 4. Admin Control Panel (Post-Privilege Elevation with Regenerated Session)
 ![Admin Panel](screenshots/06_admin_panel_rbac.png)
 
 ### 5. SameSite Cookie Policy Comparison
