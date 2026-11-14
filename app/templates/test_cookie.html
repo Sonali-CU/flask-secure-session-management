@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+    <h2>🧪 Task 7: HttpOnly Cookie Security Inspection</h2>
+    <p class="subtitle">Demonstrating that Client-Side JavaScript Cannot Access the Session Cookie via <code>document.cookie</code></p>
+
+    <div class="info-banner mb-4">
+        <p><strong>Security Objective:</strong> The <code>HttpOnly</code> cookie flag instructs the browser that the cookie should never be accessible via client-side scripts (such as <code>document.cookie</code>). This directly mitigates Cross-Site Scripting (XSS) attacks from exfiltrating session tokens.</p>
+    </div>
+
+    <div class="js-inspection-box">
+        <h4>1. JavaScript Execution Result</h4>
+        <p>Target Session Cookie Name: <code class="mono-tag">{{ cookie_name }}</code></p>
+        
+        <div class="code-block-result">
+            <span class="label">Raw <code>document.cookie</code> Content Read by Browser JavaScript:</span>
+            <pre id="docCookieOutput" class="output-pre">Reading document.cookie...</pre>
+        </div>
+
+        <div id="statusResult" class="status-box"></div>
+    </div>
+
+    <div class="mt-4">
+        <button onclick="inspectCookies()" class="btn btn-primary">Re-inspect document.cookie</button>
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Return to Dashboard</a>
+    </div>
+</div>
+
+<script>
+function inspectCookies() {
+    const raw = document.cookie;
+    const outputEl = document.getElementById('docCookieOutput');
+    const statusEl = document.getElementById('statusResult');
+    
+    outputEl.textContent = raw ? raw : '[EMPTY STRING - No non-HttpOnly cookies present]';
+    
+    const target = '{{ cookie_name }}';
+    if (raw.indexOf(target) !== -1) {
+        statusEl.className = 'status-box fail';
+        statusEl.innerHTML = '❌ <strong>FAIL:</strong> The session cookie is visible to JavaScript! HttpOnly flag is MISSING.';
+    } else {
+        statusEl.className = 'status-box pass';
+        statusEl.innerHTML = '✅ <strong>VERIFIED PASS:</strong> The session cookie (<code>' + target + '</code>) is completely HIDDEN from JavaScript. <code>document.cookie</code> returned empty string or unrelated cookies. HttpOnly protection is active!';
+    }
+}
+window.onload = inspectCookies;
+</script>
+{% endblock %}

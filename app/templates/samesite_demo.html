@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+    <h2>🌐 Task 8: SameSite Cookie Policy Analysis</h2>
+    <p class="subtitle">Preventing Cross-Site Request Forgery (CSRF) and Cross-Site Information Leaks</p>
+
+    <div class="current-policy-banner mb-4">
+        <span>Current Active SameSite Configuration: </span>
+        <span class="badge badge-sec">{{ current_policy }}</span>
+    </div>
+
+    <table class="policy-table">
+        <thead>
+            <tr>
+                <th>Policy</th>
+                <th>Cross-Site Top-Level Navigation (Links/GET)</th>
+                <th>Cross-Site Subrequests (Images, iframes, AJAX)</th>
+                <th>Cross-Site POST (Forms)</th>
+                <th>CSRF Protection Level</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="{% if current_policy == 'Strict' %}active-row{% endif %}">
+                <td><strong>Strict</strong></td>
+                <td>❌ Cookie NOT sent</td>
+                <td>❌ Cookie NOT sent</td>
+                <td>❌ Cookie NOT sent</td>
+                <td><span class="badge badge-pass">Maximum (Zero Cross-Site Leakage)</span></td>
+            </tr>
+            <tr class="{% if current_policy == 'Lax' %}active-row{% endif %}">
+                <td><strong>Lax</strong></td>
+                <td>✅ Cookie sent on safe top-level GET</td>
+                <td>❌ Cookie NOT sent</td>
+                <td>❌ Cookie NOT sent</td>
+                <td><span class="badge badge-user">Moderate (Standard Default)</span></td>
+            </tr>
+            <tr class="{% if current_policy == 'None' %}active-row{% endif %}">
+                <td><strong>None</strong></td>
+                <td>✅ Cookie sent</td>
+                <td>✅ Cookie sent (Requires Secure)</td>
+                <td>✅ Cookie sent</td>
+                <td><span class="badge badge-danger">None (Requires CSRF Tokens)</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="mt-4">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Return to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

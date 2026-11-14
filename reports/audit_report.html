@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Automated Session Security Audit Matrix</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #0b0f19;
+            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 2.5rem;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #232d42;
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .title h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            color: #fff;
+        }
+        .subtitle {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            margin-top: 0.4rem;
+        }
+        .stats {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .stat-card {
+            background: #151b2b;
+            border: 1px solid #232d42;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .stat-val {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #10b981;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .stat-label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #151b2b;
+            border: 1px solid #232d42;
+            border-radius: 12px;
+            overflow: hidden;
+            font-size: 0.88rem;
+        }
+        th, td {
+            padding: 0.85rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #1e293b;
+            vertical-align: middle;
+        }
+        th {
+            background: #101626;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        tr:hover {
+            background: #1a2236;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+            color: #38bdf8;
+        }
+        .exp {
+            color: #cbd5e1;
+        }
+        .act {
+            color: #94a3b8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+        }
+        .badge-pass {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="title">
+            <h1>🛡️ Automated Session Security Verification Report</h1>
+            <p class="subtitle">15-Point Defensive Security Audit &middot; RFC 6265bis & OWASP ASVS Hardening Standards</p>
+        </div>
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-val">16 / 16</div>
+                <div class="stat-label">Tests Passed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-val">100%</div>
+                <div class="stat-label">Compliance Score</div>
+            </div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 10%;">ID</th>
+                <th style="width: 25%;">Test Description</th>
+                <th style="width: 25%;">Expected Result</th>
+                <th style="width: 32%;">Actual Result</th>
+                <th style="width: 8%;">Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+    <tr>
+        <td><strong class="mono">TC-01</strong></td>
+        <td>Secure Session Creation & Dashboard Authentication</td>
+        <td><span class="exp">HTTP 302 redirect, session cookie set, HTTP 200 on dashboard</span></td>
+        <td><span class="act">Status: 302, Cookie: upaE-vtzPz..., Dash Status: 200</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-02</strong></td>
+        <td>Unpredictable Session Identifiers (CSPRNG Entropy & Uniqueness)</td>
+        <td><span class="exp">Zero collisions across 1,000 tokens, Shannon entropy >= 5.5 bits/char</span></td>
+        <td><span class="act">1,000 unique tokens (0 collisions), Shannon Entropy: 5.998 bits/char</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-03</strong></td>
+        <td>Session ID Regeneration on Authentication (Pre-login Reuse Rejection)</td>
+        <td><span class="exp">Pre-login ID regenerated upon login; pre-login token cannot access protected dashboard</span></td>
+        <td><span class="act">Pre-ID: RRukYukQ... != Post-ID: EQbwV-Pr..., Pre-ID access status: 302 (Redirected to login)</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-04A</strong></td>
+        <td>Automatic Session Inactivity Timeout (2 minutes idle enforcement)</td>
+        <td><span class="exp">Session terminates after inactivity duration; redirected to login with EXPIRED_INACTIVITY</span></td>
+        <td><span class="act">Initial: 200, Post-idle: 302 -> /login?reason=EXPIRED_INACTIVITY</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-04B</strong></td>
+        <td>Absolute Session Lifetime Timeout (10 minutes max lifetime enforcement)</td>
+        <td><span class="exp">Session terminates when max lifetime reached regardless of active requests; redirected with EXPIRED_ABSOLUTE</span></td>
+        <td><span class="act">Status: 302 -> /login?reason=EXPIRED_ABSOLUTE</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-05</strong></td>
+        <td>Complete Session Invalidation After Logout</td>
+        <td><span class="exp">Server-side session destroyed, cookie cleared, previous session denied access</span></td>
+        <td><span class="act">Store entry: None, Dashboard re-access status: 302 (Redirected to login)</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-06</strong></td>
+        <td>Secure Cookie Attribute Configuration (HTTPS Only Transmission)</td>
+        <td><span class="exp">Set-Cookie header includes Secure attribute, restricting cookie to encrypted TLS/HTTPS</span></td>
+        <td><span class="act">Secure flag verified in Set-Cookie: secure_session_token=3hHYBG447yVmbWsfxAV3vobVzAI2hQPP2NDRjO6Ninw; Secure; HttpOnly; Path=/; SameSite=Strict</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-07</strong></td>
+        <td>HttpOnly Cookie Attribute Configuration (XSS Mitigation)</td>
+        <td><span class="exp">Set-Cookie header includes HttpOnly attribute, blocking JavaScript document.cookie access</span></td>
+        <td><span class="act">HttpOnly flag confirmed in Set-Cookie: secure_session_token=3hHYBG447yVmbWsfxAV3vobVzAI2hQPP2NDRjO6Ninw; Secure; HttpOnly; Path=/; SameSite=Strict</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-08</strong></td>
+        <td>SameSite Cookie Policy Configuration (CSRF Mitigation)</td>
+        <td><span class="exp">SameSite configured with Strict policy to prevent cross-site request leakage</span></td>
+        <td><span class="act">SameSite attribute confirmed: SameSite=Strict</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-09</strong></td>
+        <td>Session Fixation Attack Prevention</td>
+        <td><span class="exp">Pre-assigned session ID replaced upon auth; attacker cannot use pre-assigned token</span></td>
+        <td><span class="act">Victim received fresh token (5hIz-oN8...); attacker token rejected with HTTP 302</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-10</strong></td>
+        <td>Zero Session Identifiers in URLs & Query Strings</td>
+        <td><span class="exp">Session IDs exclusively handled in HTTP cookies; never exposed in URL query parameters</span></td>
+        <td><span class="act">Final authenticated URL: https://127.0.0.1:5056/dashboard (No session parameters present)</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-11</strong></td>
+        <td>Complete Secure Authentication Lifecycle Workflow</td>
+        <td><span class="exp">Full sequence: Login -> Dashboard -> API -> Logout -> Protected Access Denied</span></td>
+        <td><span class="act">All lifecycle stages successfully executed and verified over HTTPS</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-12</strong></td>
+        <td>Automated Session Security Testing Engine (Python Requests)</td>
+        <td><span class="exp">Automated test harness programmatically validates session state, headers, and invalidation</span></td>
+        <td><span class="act">Automated test runner executed all security vectors over HTTP/HTTPS test instances</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-13</strong></td>
+        <td>Session Hijacking Simulation (Stolen Token & Fingerprint Validation)</td>
+        <td><span class="exp">Copied/forged cookie rejected; client fingerprint anomaly detected</span></td>
+        <td><span class="act">Fingerprint validation failure: True, Forged cookie access status: 302</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-14</strong></td>
+        <td>Role-Based Session Management (403 Enforcement & Privilege Regeneration)</td>
+        <td><span class="exp">Normal user denied /admin (403); session ID regenerated upon elevation; old session destroyed</span></td>
+        <td><span class="act">Normal user status: 403, Session regenerated: xYu17LRP... != RzveXa6i..., Old ID status: 302</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+    <tr>
+        <td><strong class="mono">TC-15</strong></td>
+        <td>Automated Session Security Audit CSV Report Generation</td>
+        <td><span class="exp">Automated generation of session_security_report.csv containing ID, Description, Expected, Actual, Status</span></td>
+        <td><span class="act">CSV Report populated and verified with 15 security compliance test cases</span></td>
+        <td><span class="badge badge-pass">PASS</span></td>
+    </tr>
+    
+        </tbody>
+    </table>
+</body>
+</html>

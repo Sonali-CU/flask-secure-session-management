@@ -1,0 +1,18 @@
+# Python byte code & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Environments
+.venv/
+env/
+venv/
+ENV/
+
+# SSL private keys (for production)
+# Keep certs/ for local test demonstration
+
+# OS metadata
+.DS_Store
+Thumbs.db

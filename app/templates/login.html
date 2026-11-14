@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-card-container">
+    <div class="card auth-card">
+        <div class="card-header">
+            <h2>Secure Authentication Portal</h2>
+            <p class="subtitle">Session Fixation Protected &middot; Cryptographic Token Issuance</p>
+        </div>
+
+        {% if message %}
+            <div class="alert alert-info">
+                <span class="alert-icon">ℹ️</span>
+                <span>{{ message }}</span>
+            </div>
+        {% endif %}
+
+        {% if error %}
+            <div class="alert alert-danger">
+                <span class="alert-icon">⚠️</span>
+                <span>{{ error }}</span>
+            </div>
+        {% endif %}
+
+        <form action="{{ url_for('main.login') }}" method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" class="form-input" placeholder="e.g. alice or admin" required autocomplete="username">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" class="form-input" placeholder="Enter secure password" required autocomplete="current-password">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block">Authenticate & Generate Secure Session</button>
+        </form>
+
+        <div class="security-meta-box">
+            <h4>🔐 Pre-Login Session State</h4>
+            <p>Pre-Login Session ID: <code class="mono-tag">{{ prelogin_id[:16] }}...</code></p>
+            <p class="small text-muted">Notice: Upon successful login, this pre-login identifier will be destroyed and regenerated with a brand-new 256-bit cryptographic token (Session Fixation Prevention).</p>
+        </div>
+
+        <div class="demo-accounts-box">
+            <h4>Demo Credentials</h4>
+            <table class="creds-table">
+                <thead>
+                    <tr><th>User</th><th>Role</th><th>Password</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>alice</code></td><td><span class="badge badge-user">Normal User</span></td><td><code>AliceUser@2026!</code></td></tr>
+                    <tr><td><code>bob</code></td><td><span class="badge badge-user">Normal User</span></td><td><code>BobUserPass#456</code></td></tr>
+                    <tr><td><code>admin</code></td><td><span class="badge badge-admin">Admin</span></td><td><code>SuperAdminKey$999</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

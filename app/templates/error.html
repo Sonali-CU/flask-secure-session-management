@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="auth-card-container">
+    <div class="card error-card">
+        <div class="error-badge">403</div>
+        <h2>{{ title or 'Access Denied' }}</h2>
+        <p class="text-danger font-medium">{{ message or 'You do not have sufficient permissions to access this protected resource.' }}</p>
+        <div class="mt-4">
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary">Return to Dashboard</a>
+            <a href="{{ url_for('main.login') }}" class="btn btn-secondary">Login with Another Account</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

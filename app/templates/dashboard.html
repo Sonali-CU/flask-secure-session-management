@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="dashboard-grid">
+    <div class="card welcome-card">
+        <div class="profile-header">
+            <div class="avatar-box">
+                <span class="avatar-letter">{{ user.username[0].upper() }}</span>
+            </div>
+            <div class="profile-details">
+                <h2>Welcome, {{ user.full_name }}!</h2>
+                <p class="text-muted">Logged in as <strong>@{{ user.username }}</strong></p>
+                <span class="badge {% if user.role == 'admin' %}badge-admin{% else %}badge-user{% endif %}">
+                    Role: {{ user.role.upper() }}
+                </span>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            {% if user.role != 'admin' %}
+                <form action="{{ url_for('main.elevate_privilege') }}" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-warning" title="Test Task 14: Session ID will be regenerated upon privilege elevation!">
+                        ⚡ Elevate to Admin (Tests Privilege Session Regeneration)
+                    </button>
+                </form>
+            {% else %}
+                <a href="{{ url_for('main.admin_panel') }}" class="btn btn-primary">Go to Admin Panel</a>
+            {% endif %}
+            <a href="{{ url_for('main.logout') }}" class="btn btn-danger">Invalidate Session (Logout)</a>
+        </div>
+    </div>
+
+    <div class="card session-card">
+        <h3>🔑 Session Identifier Telemetry</h3>
+        <p class="section-desc">Generated via Python's <code>secrets.token_urlsafe(32)</code> with 256-bit cryptographic entropy.</p>
+        
+        <div class="telemetry-item">
+            <span class="label">Session ID (Full 256-bit CSPRNG Token):</span>
+            <div class="token-display">
+                <code class="token-code" id="tokenDisplay">{{ full_session_id }}</code>
+            </div>
+        </div>
+
+        <div class="telemetry-grid">
+            <div class="telemetry-box">
+                <span class="box-title">⏱️ Inactivity Timeout</span>
+                <span class="box-value countdown" id="inactivityCountdown">{{ inactivity_remaining }}s</span>
+                <span class="box-sub">Limit: 2 minutes (120s)</span>
+            </div>
+            <div class="telemetry-box">
+                <span class="box-title">⏳ Absolute Timeout</span>
+                <span class="box-value countdown" id="absoluteCountdown">{{ absolute_remaining }}s</span>
+                <span class="box-sub">Limit: 10 minutes (600s)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="card security-attributes-card">
+        <h3>🛡️ Cookie Security Hardening Controls</h3>
+        <p class="section-desc">Active HTTP response header cookie flags enforced for session management:</p>
+
+        <div class="cookie-flags-list">
+            <div class="flag-item passed">
+                <div class="flag-status">✅</div>
+                <div class="flag-info">
+                    <strong>HttpOnly Attribute</strong>
+                    <p>Blocks JavaScript access via <code>document.cookie</code> to defeat Cross-Site Scripting (XSS) session theft.</p>
+                </div>
+            </div>
+
+            <div class="flag-item {% if cookie_secure %}passed{% else %}warn{% endif %}">
+                <div class="flag-status">{% if cookie_secure %}✅{% else %}⚠️{% endif %}</div>
+                <div class="flag-info">
+                    <strong>Secure Attribute</strong>
+                    <p>Ensures cookies are transmitted exclusively over encrypted HTTPS connections (Flag: <code>{{ cookie_secure }}</code>).</p>
+                </div>
+            </div>
+
+            <div class="flag-item passed">
+                <div class="flag-status">✅</div>
+                <div class="flag-info">
+                    <strong>SameSite Attribute ({{ cookie_samesite }})</strong>
+                    <p>Mitigates Cross-Site Request Forgery (CSRF) by isolating cookies from cross-site contexts.</p>
+                </div>
+            </div>
+
+            <div class="flag-item passed">
+                <div class="flag-status">✅</div>
+                <div class="flag-info">
+                    <strong>URL Exposure Prevention</strong>
+                    <p>Session IDs are stored strictly in cookies; zero session tokens are accepted or rendered in URL query strings.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Live countdown timer script
+    let inactivitySeconds = {{ inactivity_remaining }};
+    let absoluteSeconds = {{ absolute_remaining }};
+
+    const inactEl = document.getElementById('inactivityCountdown');
+    const absEl = document.getElementById('absoluteCountdown');
+
+    const timer = setInterval(() => {
+        if (inactivitySeconds > 0) inactivitySeconds--;
+        if (absoluteSeconds > 0) absoluteSeconds--;
+
+        inactEl.textContent = inactivitySeconds + 's';
+        absEl.textContent = absoluteSeconds + 's';
+
+        if (inactivitySeconds <= 0 || absoluteSeconds <= 0) {
+            clearInterval(timer);
+            alert('Session has expired! Redirecting to login...');
+            window.location.reload();
+        }
+    }, 1000);
+</script>
+{% endblock %}

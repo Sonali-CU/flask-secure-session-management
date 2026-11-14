@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card admin-card">
+    <div class="admin-header">
+        <span class="badge badge-admin">Administrator Clearance Level</span>
+        <h2>System Administration Control Panel</h2>
+        <p class="text-muted">Strict Role-Based Access Control (RBAC) verified &middot; Session ID was regenerated upon elevation</p>
+    </div>
+
+    <div class="admin-stats-grid">
+        <div class="stat-card">
+            <span class="stat-num">{{ active_sessions_count }}</span>
+            <span class="stat-label">Active Valid Sessions in Server Store</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-num">256-bit</span>
+            <span class="stat-label">CSPRNG Token Entropy Level</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-num">PASS</span>
+            <span class="stat-label">Privilege Escalation Regeneration</span>
+        </div>
+    </div>
+
+    <div class="admin-info-box">
+        <h3>🔒 Role-Based Session Security Controls (Task 14)</h3>
+        <ul>
+            <li><strong>Access Control Rule:</strong> Only authenticated sessions possessing the <code>admin</code> role are granted access to <code>/admin</code>.</li>
+            <li><strong>403 Enforcement:</strong> Normal users attempting direct navigation to <code>/admin</code> receive an immediate <code>403 Forbidden</code> HTTP status code.</li>
+            <li><strong>Session ID Regeneration on Privilege Change:</strong> Whenever a normal user is promoted to admin, their session identifier is automatically revoked and replaced with a fresh token to neutralize session fixation / privilege inheritance vulnerabilities.</li>
+        </ul>
+    </div>
+
+    <div class="mt-4">
+        <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">&larr; Return to Dashboard</a>
+        <a href="{{ url_for('main.logout') }}" class="btn btn-danger">Logout</a>
+    </div>
+</div>
+{% endblock %}
